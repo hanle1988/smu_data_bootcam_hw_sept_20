@@ -1,0 +1,110 @@
+Sub Stocks()
+    
+    ' Declare Current as a worksheet object variable.
+        Dim ws As Worksheet
+
+    ' Loop through all of the worksheets in the active workbook.
+        For Each ws In Worksheets
+    
+        ' init variable to hold the volume
+            
+            volume = 0
+        
+        
+        ' write out the SUMMARY TABLE ROW
+            summTableRow = 2
+            
+            
+            openrow = 2
+            
+            ws.Cells(1, 9).Value = "Ticker"
+            ws.Cells(1, 10).Value = "Yealy change"
+            ws.Cells(1, 11).Value = "Percentage change"
+            ws.Cells(1, 12).Value = "Total Volume"
+            RowCount = Cells(Rows.Count, "A").End(xlUp).Row
+            ws.Cells(1, 16).Value = "Ticker"
+            ws.Cells(1, 17).Value = "Value"
+            ws.Cells(2, 15).Value = "Greatest % Increase"
+            ws.Cells(3, 15).Value = "Greatest % Decrease"
+            ws.Cells(4, 15).Value = "Greatest Total Volume"
+
+        ' for each row
+            For i = 2 To RowCount
+                
+                ' get the credit card of that row
+                ticker = ws.Cells(i, 1).Value
+                
+                ' if the credit card in the next row is different...
+                If (ticker <> ws.Cells(i + 1, 1).Value) Then
+                    ' finish the sum by grabbing value from the last row of the group
+                    volume = volume + ws.Cells(i, 7).Value
+                    Change = ws.Cells(i, 6).Value - ws.Cells(openrow, 3).Value
+                    perchange = Change / ws.Cells(openrow, 3).Value
+                    
+                                                
+                    ' write out to the summary table
+                    ws.Cells(summTableRow, 9).Value = ticker
+                    ws.Cells(summTableRow, 10).Value = Change
+                    ws.Cells(summTableRow, 11).Value = perchange
+                    ws.Cells(summTableRow, 12).Value = volume
+                    
+                    
+                    ws.Cells(summTableRow, 10).NumberFormat = "0.00"
+                    ws.Cells(summTableRow, 11).NumberFormat = "0.00%"
+                    
+                    ' reset the sum for the next credit card (since we know it's different)
+                    
+                    summTableRow = summTableRow + 1
+                    volume = 0
+                    openrow = i + 1
+                    
+                ' if the next ticker is the same
+                Else
+                    ' increment the sum
+                    volume = volume + ws.Cells(i, 7).Value
+                End If
+                
+                'color format the yearly change column
+                        If ws.Cells(summTableRow, 10).Value < 0 Then
+                        
+                            'set background as red
+                            ws.Cells(summTableRow, 10).Interior.ColorIndex = 3
+                        
+                        'set background as green
+                        Else
+                            ws.Cells(summTableRow, 10).Interior.ColorIndex = 4
+                                    
+                        End If
+        
+            Next i
+    
+             'find min, max and print result
+                lastrow2 = ws.Cells(Rows.Count, 9).End(xlUp).Row
+               
+                
+                ws.Cells(4, 17).Value = Application.WorksheetFunction.Max(ws.Range("L:L"))
+                ws.Cells(3, 17).Value = Application.WorksheetFunction.Min(ws.Range("K:K"))
+                ws.Cells(2, 17).Value = Application.WorksheetFunction.Max(ws.Range("K:K"))
+                
+                For bonus = 2 To lastrow2
+                                
+                    If (ws.Cells(bonus, 12).Value = ws.Cells(4, 17).Value) Then
+                    ws.Cells(4, 16) = ws.Cells(bonus, 9)
+                    End If
+                    
+                    If (ws.Cells(bonus, 11).Value = ws.Cells(3, 17).Value) Then
+                    ws.Cells(3, 16) = ws.Cells(bonus, 9)
+                    End If
+                
+                     If (ws.Cells(bonus, 11).Value = ws.Cells(2, 17).Value) Then
+                    ws.Cells(2, 16) = ws.Cells(bonus, 9)
+                    End If
+                
+                
+                Next bonus
+    
+    
+    Next ws
+
+
+End Sub
