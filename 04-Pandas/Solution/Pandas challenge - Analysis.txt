@@ -1,0 +1,4 @@
+Based on the data,it seems like the charter schools have higher passing scores in both math and reading compared to district school. 
+There is no much different in passing score when it comes to medium and small schools. 
+The larger school has much lower scores and passing rate than the small and medium-sized schools.
+Also, schools with smaller budgets seem to perform better than schools with higher budgets
